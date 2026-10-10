@@ -1,0 +1,28 @@
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    environment: { POSTGRES_DB: shopsmart, POSTGRES_USER: shopsmart, POSTGRES_PASSWORD: shopsmart }
+    ports: ["5432:5432"]
+    volumes: [pgdata:/var/lib/postgresql/data]
+    healthcheck: { test: ["CMD-SHELL", "pg_isready -U shopsmart"], interval: 5s, retries: 20 }
+  backend:
+    build: ./backend
+    depends_on: { db: { condition: service_healthy } }
+    environment:
+      DB_URL: jdbc:postgresql://db:5432/shopsmart
+      DB_USER: shopsmart
+      DB_PASSWORD: shopsmart
+      JWT_SECRET: ${JWT_SECRET:-dev-only-secret-change-me-dev-only-secret-change-me}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-sk-not-set}
+      OPENAI_BASE_URL: ${OPENAI_BASE_URL:-https://api.openai.com}
+      OPENAI_MODEL: ${OPENAI_MODEL:-gpt-4o-mini}
+      SHOPSMART_EMBEDDINGS: ${SHOPSMART_EMBEDDINGS:-local}
+      SPRING_AI_MODEL_EMBEDDING: ${SPRING_AI_MODEL_EMBEDDING:-transformers}
+      CORS_ORIGINS: http://localhost:3000
+    ports: ["8080:8080"]
+  frontend:
+    build: ./frontend
+    depends_on: [backend]
+    ports: ["3000:80"]
+volumes:
+  pgdata:
