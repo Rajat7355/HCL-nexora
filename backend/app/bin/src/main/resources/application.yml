@@ -1,0 +1,70 @@
+spring:
+  application:
+    name: shopsmart-ai
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/shopsmart}
+    username: ${DB_USER:shopsmart}
+    password: ${DB_PASSWORD:shopsmart}
+  flyway:
+    enabled: true
+    # every slice module ships its own migrations under db/migration; the app module ships the demo catalog under db/seed
+    locations: classpath:db/migration${SHOPSMART_SEED_LOCATION:,classpath:db/seed}
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 12MB
+  jackson:
+    default-property-inclusion: always
+  ai:
+    model:
+      chat: openai
+      embedding: ${SPRING_AI_MODEL_EMBEDDING:transformers}   # set to "none" together with SHOPSMART_EMBEDDINGS=hash for offline mode
+      image: none
+      moderation: none
+      audio:
+        speech: none
+        transcription: none
+    openai:
+      api-key: ${OPENAI_API_KEY:sk-not-set}                  # any OpenAI-compatible endpoint works (OpenAI, Groq, Ollama, vLLM ...)
+      base-url: ${OPENAI_BASE_URL:https://api.openai.com}
+      chat:
+        options:
+          model: ${OPENAI_MODEL:gpt-4o-mini}
+          temperature: 0.2
+    retry:
+      max-attempts: 2
+
+server:
+  port: 8080
+  error:
+    include-message: never
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+
+shopsmart:
+  embeddings: ${SHOPSMART_EMBEDDINGS:local}                  # local = Spring AI ONNX MiniLM (384-dim), hash = offline fallback
+  ai:
+    enabled: true
+  jwt:
+    secret: ${JWT_SECRET:dev-only-secret-change-me-dev-only-secret-change-me}
+    access-minutes: 60
+    refresh-days: 7
+  cors-origins: ${CORS_ORIGINS:http://localhost:5173}
+  storage-dir: ${STORAGE_DIR:./data/uploads}
+  seed:
+    demo-data: ${SHOPSMART_DEMO_DATA:true}                   # demo users, orders and sample policy documents
+  mock-shipping:
+    enabled: true
+    tick-ms: 20000
+    step-seconds: 60
+    delay-probability: 0.25
+  agents:
+    scheduled: false
+  rag:
+    high: 0.55
+    medium: 0.42
+    min: 0.30

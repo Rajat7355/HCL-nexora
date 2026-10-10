@@ -1,0 +1,20 @@
+{
+  "programme": "ShopSmart Membership",
+  "tiers": [
+    {
+      "name": "Basic",
+      "price": "Free",
+      "benefits": ["Standard delivery with a ₹580.23 fee on orders below ₹9,686.72", "30 day returns on most items", "Return shipping fee of ₹483.37"]
+    },
+    {
+      "name": "Prime",
+      "price": "₹4,746.49 per year",
+      "benefits": ["Free standard shipping on all orders", "Free return pickup", "₹484.34 coupon for late deliveries", "Early access to sales"]
+    },
+    {
+      "name": "Premium",
+      "price": "₹9,589.85 per year",
+      "benefits": ["Free standard and express shipping", "5 percent discount on every order", "Free return pickup", "24 month warranty on laptops and smartphones", "₹968.67 coupon for late deliveries", "Priority support"]
+    }
+  ]
+}
