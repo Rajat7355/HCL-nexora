@@ -1,0 +1,65 @@
+databases:
+  - name: shopsmart-db
+    databaseName: shopsmart
+    user: shopsmart
+    plan: free
+    postgresMajorVersion: "16"
+    ipAllowList: []
+
+services:
+  - type: web
+    name: shopsmart-api
+    runtime: docker
+    plan: free
+    rootDir: backend
+    dockerContext: .
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /actuator/health
+    envVars:
+      - key: DB_HOST
+        fromDatabase:
+          name: shopsmart-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: shopsmart-db
+          property: port
+      - key: DB_NAME
+        fromDatabase:
+          name: shopsmart-db
+          property: database
+      - key: DB_USER
+        fromDatabase:
+          name: shopsmart-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: shopsmart-db
+          property: password
+      - key: JWT_SECRET
+        generateValue: true
+      - key: CORS_ORIGINS
+        value: https://shopsmart-web.onrender.com
+      - key: SHOPSMART_EMBEDDINGS
+        value: hash
+      - key: SPRING_AI_MODEL_EMBEDDING
+        value: none
+      - key: SHOPSMART_DEMO_DATA
+        value: "true"
+      - key: SHOPSMART_DEMO_USERS
+        value: "false"
+      - key: STORAGE_DIR
+        value: /tmp/shopsmart-uploads
+
+  - type: web
+    name: shopsmart-web
+    runtime: static
+    buildCommand: npm ci && npm run build
+    staticPublishPath: dist
+    rootDir: frontend
+    envVars:
+      - key: VITE_API_BASE_URL
+        fromService:
+          type: web
+          name: shopsmart-api
+          property: url

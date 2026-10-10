@@ -1,0 +1,11 @@
+# Each vertical slice has one owner (rename to real GitHub handles)
+/backend/catalog/                 @lovish
+/frontend/src/features/catalog/   @lovish
+/backend/commerce/                @rajat
+/frontend/src/features/account/   @rajat
+/backend/knowledge/               @nimisha
+/frontend/src/features/knowledge/ @nimisha
+/backend/assistant/               @aman
+/frontend/src/features/assistant/ @aman
+/backend/kit/                     @lovish @nimisha @aman @rajat
+/backend/app/                     @lovish @nimisha @aman @rajat
